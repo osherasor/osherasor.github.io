@@ -5,14 +5,57 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Job Hunter</title>
-<meta http-equiv="refresh" content="0; url=https://claude.ai/artifact/5zKD8HyMCTYkMootZffhuU">
+<!-- the logo: bookmarks bar, browser tab, home screen -->
+<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#B05E28">
+<meta name="apple-mobile-web-app-title" content="Job Hunter">
+<meta name="application-name" content="Job Hunter">
 <style>
-  body{margin:0;min-height:100vh;display:grid;place-items:center;background:#F4F6F8;color:#18212C;font-family:Arial,Helvetica,sans-serif}
-  a{color:#B05E28;font-weight:bold}
+  :root{color-scheme:light dark}
+  body{margin:0;min-height:100vh;display:grid;place-items:center;background:#F4F6F8;color:#18212C;font-family:Arial,Helvetica,sans-serif;text-align:center}
+  @media (prefers-color-scheme:dark){body{background:#10151C;color:#E6EBF1}}
+  main{max-width:420px;padding:24px 16px}
+  img{width:96px;height:96px;border-radius:22px}
+  h1{font-size:1.6rem;margin:12px 0 4px}
+  p{margin:6px 0;line-height:1.55}
+  a.go{display:inline-block;margin:14px 0 18px;background:#B05E28;color:#fff;text-decoration:none;font-weight:bold;padding:12px 26px;border-radius:10px;font-size:1.05rem}
+  ul{text-align:start;padding-inline-start:20px;margin:8px 0}
+  li{margin:6px 0}
+  .muted{opacity:.75;font-size:.92rem}
+  [hidden]{display:none!important}
 </style>
 </head>
 <body>
-<p>עוברים ל-<a href="https://claude.ai/artifact/5zKD8HyMCTYkMootZffhuU">Job Hunter</a>…</p>
-<script>location.replace("https://claude.ai/artifact/5zKD8HyMCTYkMootZffhuU");</script>
+<main>
+  <img src="icon-192.png" alt="">
+  <h1>Job Hunter</h1>
+  <p id="going">עוברים לאתר…</p>
+  <div id="install" hidden>
+    <a class="go" href="https://claude.ai/artifact/5zKD8HyMCTYkMootZffhuU">כניסה לאתר</a>
+    <p><b>כדי שהלוגו יופיע אצלך כאייקון:</b></p>
+    <ul>
+      <li><b>אייפון:</b> כפתור השיתוף בתחתית המסך, ואז "הוספה למסך הבית".</li>
+      <li><b>אנדרואיד:</b> התפריט ⋮ למעלה, ואז "הוספה למסך הבית".</li>
+      <li><b>מחשב:</b> Ctrl+D, או הכוכבית בשורת הכתובת, כדי לשמור בסרגל הסימניות.</li>
+    </ul>
+    <p class="muted">לחיצה על האייקון פותחת את האתר ישר. בכניסה הראשונה צריך להיות מחוברת ל-Claude.</p>
+  </div>
+</main>
+<script>
+  // "#install": a page to add the icon from. Its address becomes the plain link, so the icon / bookmark saved from
+  // here opens the site directly. Any other visit goes straight to the site.
+  if (location.hash === "#install") {
+    document.getElementById("going").hidden = true;
+    document.getElementById("install").hidden = false;
+    history.replaceState(null, "", location.pathname);
+  } else {
+    location.replace("https://claude.ai/artifact/5zKD8HyMCTYkMootZffhuU");
+  }
+</script>
+<noscript><p><a href="https://claude.ai/artifact/5zKD8HyMCTYkMootZffhuU">כניסה לאתר</a></p></noscript>
 </body>
 </html>
