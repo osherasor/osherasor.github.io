@@ -22,7 +22,10 @@
   img{width:96px;height:96px;border-radius:22px}
   h1{font-size:1.6rem;margin:12px 0 4px}
   p{margin:6px 0;line-height:1.55}
-  a.go{display:inline-block;margin:14px 0 18px;background:#B05E28;color:#fff;text-decoration:none;font-weight:bold;padding:12px 26px;border-radius:10px;font-size:1.05rem}
+  .go{display:inline-block;margin:14px 0 10px;background:#B05E28;color:#fff;border:0;text-decoration:none;font:inherit;font-weight:bold;padding:12px 26px;border-radius:10px;font-size:1.05rem;cursor:pointer}
+  .go2{display:inline-block;margin:12px 0 4px;color:#B05E28;font-weight:bold}
+  ol{text-align:start;padding-inline-start:22px;margin:8px 0}
+  .share{width:20px;height:20px;vertical-align:-4px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   ul{text-align:start;padding-inline-start:20px;margin:8px 0}
   li{margin:6px 0}
   .muted{opacity:.75;font-size:.92rem}
@@ -35,23 +38,54 @@
   <h1>Job Hunter</h1>
   <p id="going">עוברים לאתר…</p>
   <div id="install" hidden>
-    <a class="go" href="https://claude.ai/artifact/5zKD8HyMCTYkMootZffhuU">כניסה לאתר</a>
-    <p><b>כדי שהלוגו יופיע אצלך כאייקון:</b></p>
-    <ul>
-      <li><b>אייפון:</b> כפתור השיתוף בתחתית המסך, ואז "הוספה למסך הבית".</li>
-      <li><b>אנדרואיד:</b> התפריט ⋮ למעלה, ואז "הוספה למסך הבית".</li>
-      <li><b>מחשב:</b> Ctrl+D, או הכוכבית בשורת הכתובת, כדי לשמור בסרגל הסימניות.</li>
-    </ul>
+    <button type="button" class="go" id="addBtn" hidden>הוספה למסך הבית</button>
+    <p id="added" hidden><b>נוסף.</b> האייקון של Job Hunter נמצא עכשיו במסך הבית.</p>
+    <div id="howIos" hidden>
+      <p><b>באייפון ובאייפד</b> Apple לא מאפשרת לאתר להוסיף את עצמו, אז זה שני צעדים:</p>
+      <ol>
+        <li>לוחצים על כפתור השיתוף <svg class="share" viewBox="0 0 24 24" aria-label="שיתוף"><path d="M12 3v12M8 7l4-4 4 4M6 11H5v9h14v-9h-1"/></svg> בתחתית המסך (או למעלה, באייפד).</li>
+        <li>בוחרים "הוספה למסך הבית" ולוחצים "הוסף".</li>
+      </ol>
+    </div>
+    <div id="howOther" hidden>
+      <p><b>אם לא הופיע כפתור הוספה:</b></p>
+      <ul>
+        <li><b>אנדרואיד:</b> התפריט ⋮ למעלה, ואז "הוספה למסך הבית".</li>
+        <li><b>מחשב:</b> Ctrl+D, או הכוכבית בשורת הכתובת, כדי לשמור בסרגל הסימניות.</li>
+      </ul>
+    </div>
+    <a class="go2" href="https://claude.ai/artifact/5zKD8HyMCTYkMootZffhuU">כניסה לאתר</a>
     <p class="muted">לחיצה על האייקון פותחת את האתר ישר. בכניסה הראשונה צריך להיות מחוברת ל-Claude.</p>
   </div>
 </main>
 <script>
   // "#install": a page to add the icon from. Its address becomes the plain link, so the icon / bookmark saved from
-  // here opens the site directly. Any other visit goes straight to the site.
+  // here opens the site directly. Any other visit (and the icon itself) goes straight to the site.
+  const $ = (id) => document.getElementById(id);
   if (location.hash === "#install") {
-    document.getElementById("going").hidden = true;
-    document.getElementById("install").hidden = false;
+    $("going").hidden = true;
+    $("install").hidden = false;
     history.replaceState(null, "", location.pathname);
+    const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    if (ios) $("howIos").hidden = false; else $("howOther").hidden = false;
+    // Android, and Chrome / Edge on a computer: the browser's own "add / install" window, at one tap
+    if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+    let offer = null;
+    addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      offer = e;
+      $("addBtn").hidden = false;
+      $("howOther").hidden = true;
+    });
+    $("addBtn").addEventListener("click", async () => {
+      if (!offer) return;
+      offer.prompt();
+      const choice = await offer.userChoice;
+      offer = null;
+      $("addBtn").hidden = true;
+      if (choice.outcome === "accepted") $("added").hidden = false; else $("howOther").hidden = false;
+    });
+    addEventListener("appinstalled", () => { $("addBtn").hidden = true; $("howOther").hidden = true; $("added").hidden = false; });
   } else {
     location.replace("https://claude.ai/artifact/5zKD8HyMCTYkMootZffhuU");
   }
